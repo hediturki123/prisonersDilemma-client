@@ -12,14 +12,14 @@ export class GameConnectionService {
 
   protected readonly hostURL: string = environment.herokuHost;
 
-  protected readonly baseURL: string = this.hostURL + '/home';
+  protected readonly baseURL: string = this.hostURL + 'home/';
 
   constructor(protected http: HttpClient) {}
 
-  async create(g: Game): Promise<boolean> {
+  async create(nbTurns : number): Promise<boolean> {
     let ok = false;
     try{
-      const resp = await this.http.post(`${this.baseURL}${g.id}`, g, {observe: 'response', responseType: 'json'}).toPromise();
+      const resp = await this.http.post(`${this.baseURL}$`, nbTurns, {observe: 'response', responseType: 'json'}).toPromise();
       ok = resp.status === 200;
     }catch(httpError){
       console.error("error in creation of a game");

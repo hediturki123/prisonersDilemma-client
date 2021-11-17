@@ -10,3 +10,5 @@ export type Game = {
   player2 : Player;
   nbTurns : number;
 }
+
+
