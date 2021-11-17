@@ -1,3 +1,4 @@
 export const environment = {
-  production: true
+  production: true,
+  herokuHost: "https://prisonners-dilemma.herokuapp.com/"
 };
