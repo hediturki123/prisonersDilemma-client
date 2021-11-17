@@ -18,16 +18,17 @@ export class GameConnectionService {
 
   async create(nbTurns : number): Promise<boolean> {
     let ok = false;
-    try{
-      const resp = await this.http.post(`${this.baseURL}$`, nbTurns, {observe: 'response', responseType: 'json'}).toPromise();
+    try {
+      const resp = await this.http.post(`${this.baseURL}`, nbTurns, {observe: 'response', responseType: 'json'}).toPromise();
       ok = resp.status === 200;
-    }catch(httpError){
+    } catch(httpError) {
+      console.log("baseURL : " + this.baseURL);
       console.error("error in creation of a game");
     }
     return ok;
   }
 
-  async read(id: string): Promise<Game | null>{
+  async read(id: string): Promise<Game | null> {
     let game: Game | null = null;
         try {
             const resp = await this.http

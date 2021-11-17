@@ -1,7 +1,7 @@
 import { GameConnectionService } from './service/game-connection.service';
 import { ChangeDetectionStrategy, Component } from '@angular/core';
-import { OSM_TILE_LAYER_URL } from '@yaga/leaflet-ng2';
-import { Observable } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
+
 
 @Component({
   selector: 'app-root',
@@ -19,6 +19,10 @@ export class AppComponent {
 
   readGame() {
 
+  }
+
+  joinGame(idGame : string) {
+    //this.gameConnectionService.read(+idGame);
   }
 
 }
