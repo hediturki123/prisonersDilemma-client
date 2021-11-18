@@ -69,22 +69,18 @@ export class GameConnectionService {
         console.log(rep);
       });
     }
-
-
     return ok;
   }
 
-  async delete(id: string): Promise<boolean> {
-    let ok = false;
-        try {
-            const resp = await this.http
-                .delete(`${this.baseURL}${id}`, {observe: 'response', responseType: 'json'})
-                .toPromise();
-            ok = resp.status === 200;
-        } catch (httpError) {
-            console.error("error in suppression of the game");
-        }
-        return ok;
+  async readLastGame(): Promise<Game | null>{
+    var game : Game | null = null;
+    await fetch(`${this.baseURL}game/lastGame` , {
+      method : 'GET'
+    }).then((r) => {
+      return r.json()
+    }).then( (r : Game) => {
+      game = r;
+    });
+    return game;
   }
-
 }
