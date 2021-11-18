@@ -1,1 +1,12 @@
-<p>play-game works!</p>
+<div>
+  <label>Round {{round}}</label>
+  <button (click) = "readPlayer(1, 1)">read player1</button>
+  <button (click) = "readPlayer(2, 1)">read player2</button>
+  <button (click) = "updatePlayer(1, 1)">update player1</button>
+  <button [disabled] = "clicked" (click) = "clickAction('COOPERATE')" >COOPERATE</button>
+  <button [disabled] = "clicked" (click) = "clickAction('BETRAY')">BETRAY</button>
+</div>
+
+<div *ngIf = "gameIsFinished">
+  <label>Score {{score}}</label>
+</div>

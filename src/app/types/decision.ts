@@ -1,1 +1,1 @@
-export type Decision = 'COOPERATE' | 'BETRAY' | 'GIVEUP';
+export type Decision = 'COOPERATE' | 'BETRAY' | 'GIVEUP' | null;

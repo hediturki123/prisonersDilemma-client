@@ -1,14 +1,16 @@
+import { Strategy } from '../types/strategy';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
 import { Game } from '../types/game';
+import { Player } from '../types/player';
 
 
 @Injectable({
   providedIn: 'root'
 })
 
-export class GameConnectionService {
+export class PlayerService {
 
   protected readonly hostURL: string = environment.herokuHost;
 
@@ -32,35 +34,35 @@ export class GameConnectionService {
     return ok;
   }
 
-  async read(id: string): Promise<Game | null> {
-    var game : Game | null = null;
-    await fetch(`${this.baseURL}game/${id}` , {
+  async read(idPlayer: number, idGame : number): Promise<Player | null> {
+    var player : Player | null = null;
+    await fetch(`${this.baseURL}game/${idGame}/player/${idPlayer}` , {
       method : 'GET'
     }).then((r) => {
       return r.json()
-    }).then( (r : Game) => {
-      game = r;
-      //console.log(game)
+    }).then( (r : Player) => {
+      player = r;
+      console.log(player)
     });
-    return game;
+    return player;
   }
 
-
-  async update(idGame : string): Promise<boolean> {
+  async update(idPlayer : number, idGame : number): Promise<boolean> {
     let ok = false;
     var game : Game | null = null;
+    var player : Player | null = null;
 
-    await this.read(idGame).then(resp => {
-      game = resp;
+    await this.read(idPlayer, idGame).then(resp => {
+      player = resp;
     });
 
     if(game !== null){
       var game2 : Game = game;
       var data = new FormData();
-      data.append( "json", JSON.stringify( game2 ) );
-      await fetch(`${this.baseURL}game/${game2.id}` ,{
+      data.append( "json", JSON.stringify( player ) );
+      await fetch(`${this.baseURL}game/${game2.id}/player/${idPlayer}` ,{
         method : 'PUT',
-        body : data
+        body : player
       }).then((r) => {
         ok = true;
         return r.json();
@@ -71,15 +73,4 @@ export class GameConnectionService {
     return ok;
   }
 
-  async readLastGame(): Promise<Game | null>{
-    var game : Game | null = null;
-    await fetch(`${this.baseURL}game/lastGame` , {
-      method : 'GET'
-    }).then((r) => {
-      return r.json()
-    }).then( (r : Game) => {
-      game = r;
-    });
-    return game;
-  }
 }
