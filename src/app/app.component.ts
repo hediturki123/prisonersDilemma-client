@@ -7,6 +7,7 @@ import { BehaviorSubject, Observable } from 'rxjs';
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.scss'],
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
 export class AppComponent {
 
@@ -17,12 +18,12 @@ export class AppComponent {
     this.gameConnectionService.create(+nbTurns);
   }
 
-  readGame() {
-
+  readGame(idGame : string) {
+    this.gameConnectionService.read(idGame);
   }
 
   joinGame(idGame : string) {
-    //this.gameConnectionService.read(+idGame);
+    this.gameConnectionService.update(idGame);
   }
 
 }
