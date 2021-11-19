@@ -71,6 +71,26 @@ export class GameConnectionService {
     return ok;
   }
 
+
+  async updateGame(game : Game): Promise<boolean> {
+    let ok = false;
+    if(game !== null){
+      var game2 : Game = game;
+      var data = new FormData();
+      data.append( "json", JSON.stringify( game2 ) );
+      await fetch(`${this.baseURL}game/${game2.id}` ,{
+        method : 'PUT',
+        body : data
+      }).then((r) => {
+        ok = true;
+        return r.json();
+      }).then(rep => {
+        console.log(rep);
+      });
+    }
+    return ok;
+  }
+
   async readLastGame(): Promise<Game | null>{
     var game : Game | null = null;
     await fetch(`${this.baseURL}game/lastGame` , {

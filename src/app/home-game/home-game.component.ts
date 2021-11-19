@@ -35,13 +35,22 @@ export class HomeGameComponent implements OnInit {
   joinGame(idGame : string) {
     this.gameConnectionService.update(idGame).then(rep => {
       if(rep){
-        this.openPlayPage(idGame);
+        this.openJoinPage(idGame);
       }
     });
   }
 
-  openPlayPage(idGame : string) {
-    this.routeur.navigate([`/home/play/${idGame}`]);
+  async openPlayPage(idGame : string) {
+    let idPlayer : number = 0;
+    await this.gameConnectionService.read(idGame).then(g => {
+      idPlayer = g?.player1?.id as number;});
+    this.routeur.navigate([`/home/play/${idGame}/${idPlayer}`]);
+  }
+
+  async openJoinPage(idGame : string) {
+    let idPlayer : number = 0;
+    await this.gameConnectionService.read(idGame).then(g => {idPlayer = g?.player2?.id as number;});
+    this.routeur.navigate([`/home/play/${idGame}/${idPlayer}`]);
   }
 
 }

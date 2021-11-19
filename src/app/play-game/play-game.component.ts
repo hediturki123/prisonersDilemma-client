@@ -5,6 +5,7 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Player } from '../types/player';
 import { ActivatedRoute } from '@angular/router';
 import { Game } from '../types/game';
+import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-play-game',
@@ -16,21 +17,16 @@ export class PlayGameComponent implements OnInit {
 
   round = 1;
 
-  clicked = false;
+  clickedPlayer1 = false;
+  clickedPlayer2 = false;
 
   gameIsFinished = false;
-
-  decision : Decision = null;
 
   score = 0;
 
   nbTurns = 10;
 
-  player : Player = {
-    id : 0,
-    score : 0,
-    currentDecision : null
-  }
+  behaviourSubject : BehaviorSubject<number | null> = new BehaviorSubject<number | null>(null);
 
   constructor(private gameConnectionService : GameConnectionService,
     private playerService : PlayerService, private route:ActivatedRoute) { }
@@ -38,23 +34,57 @@ export class PlayGameComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  getRoute() {
-    this.route.snapshot.params['gameId'];
+  playerIdUrl () {
+    //let playerId = await this.readPlayerFromUrl().then(p => {return p?.id;});
+    this.readPlayerFromUrl().then(p => {
+      this.behaviourSubject.next(p?.id as number);
+    });
   }
 
-  playRound() {
-    //player 1 plays
-    //player 2 plays
-    //update the score of the players
+  get obsBehaviourSubject() {
+    return this.behaviourSubject.asObservable();
+  }
 
+  getGameId() {
+    return this.route.snapshot.params['gameId'];
+  }
+
+  getPlayerId() {
+    return this.route.snapshot.params['playerId'];
+  }
+
+  async playRound() {
+    let game = await this.readGameFromUrl().then(g => {
+      return g as Game;
+    });
+    if (game.player1?.havePlayed === true && game.player2?.havePlayed === false){
+      console.log("a");
+    }
+    if (game.player1?.havePlayed === false && game.player2?.havePlayed === true) {
+      console.log("b");
+    }
+    if (game.player1?.havePlayed === false && game.player2?.havePlayed === false) {
+      console.log("c");
+      this.clickedPlayer1 = true;
+    }
+
+    if (game.player1?.havePlayed === true && game.player2?.havePlayed === true) {
+      game.player1.havePlayed = false;
+      game.player2.havePlayed = false;
+      this.clickedPlayer1 = false;
+      this.clickedPlayer2 = false;
+      this.playerService.updatePlayer(game.player1, game);
+      this.playerService.updatePlayer(game.player2, game);
+      this.gameConnectionService.updateGame(game);
+    }
     this.round++;
-    if (this.round === this.nbTurns) {
+    if (this.round === game.nbTurns) {
       this.gameIsFinished = true;
     }
   }
 
   async readGameFromUrl() : Promise<Game | null> {
-    return await this.playerService.readGame(this.route.snapshot.params['gameId']);
+    return await this.gameConnectionService.read(this.route.snapshot.params['gameId']);
   }
 
   async readPlayerFromUrl() : Promise<Player | null> {
@@ -64,28 +94,38 @@ export class PlayGameComponent implements OnInit {
     return await this.playerService.read(this.route.snapshot.params['playerId'], idGame as number);
   }
 
- /* async readPlayerFromGame(game : Game) {
-    let playerId = await this.getPlayerId(game);
-    this.readPlayer(playerId, game.id)
+  readPlayerPromise(idPlayer : number, idGame : number) {
+    return this.playerService.read(idPlayer, idGame);
   }
-*/
+
   readPlayer(idPlayer : number, idGame : number) {
-    this.playerService.read(idPlayer, idGame);
-    this.getRoute();
+    return this.playerService.read(idPlayer, idGame);
   }
 
   updatePlayer(idPlayer : number, idGame : number) {
     this.playerService.update(idPlayer, idGame);
   }
 
-  clickAction(idPlayer : number, decision : Decision) {
-    this.decision = decision;
-    this.waitPlayer(idPlayer);
-    this.clicked = true;
+  readGame(idGame : string) {
+    return this.gameConnectionService.read(idGame);
   }
 
-  waitPlayer(idPlayer : number) {
-
+  async clickAction(idPlayer : number, decision : Decision) {
+    let game = await this.readGameFromUrl().then(g => {
+      return g as Game;
+    });
+    let player = await this.readPlayer(idPlayer, game.id).then(p => {
+      return p as Player;
+    });
+    player.currentDecision = decision;
+    player.havePlayed = true;
+    if (game.player1?.havePlayed) {
+      this.clickedPlayer1 = true;
+    } else if (game.player2?.havePlayed) {
+      this.clickedPlayer2 = true;
+    }
+    this.playerService.updatePlayer(player, game);
+    this.playRound();
   }
 
 }

@@ -1,11 +1,12 @@
 
-<div *ngIf = "g != null">
-  <label>Round {{round}}</label>
-  <button (click) = "readPlayer(1, 1)">read player1</button>
-  <button (click) = "readPlayer(2, 1)">read player2</button>
-  <button (click) = "updatePlayer(1, 1)">update player1</button>
-  <button [disabled] = "clicked" (click) = "clickAction(1, 'COOPERATE')" >COOPERATE</button>
-  <button [disabled] = "clicked" (click) = "clickAction(1, 'BETRAY')">BETRAY</button>
+<div>
+  <label> idGame : {{getGameId()}} </label>
+  <label> idPlayer : {{getPlayerId()}} </label>
+  <label> Round : {{round}} </label>
+  <button (click) = "readPlayer(getPlayerId(), getGameId())">read player1</button>
+  <button (click) = "updatePlayer(getPlayerId(), getGameId())">update player1</button>
+  <button [disabled] = "clickedPlayer1" (click) = "clickAction(getPlayerId(), 'COOPERATE')" >COOPERATE</button>
+  <button [disabled] = "clickedPlayer2" (click) = "clickAction(getPlayerId(), 'BETRAY')">BETRAY</button>
 </div>
 
 <div *ngIf = "gameIsFinished">
