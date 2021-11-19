@@ -4,8 +4,7 @@ import { Strategy } from "./strategy";
 export type Player = {
   id : number;
   score : number;
-  strategy : Strategy;
-  currentDecision : Decision
+  currentDecision : Decision | null;
 }
 
 

@@ -18,22 +18,6 @@ export class PlayerService {
 
   constructor(protected http: HttpClient) {}
 
-  async create(nbTurns : number): Promise<boolean> {
-    let ok = false;
-    var data = new FormData();
-    data.append( "json", JSON.stringify( nbTurns ) );
-    await fetch(`${this.baseURL}${nbTurns}` ,{
-      method : 'POST',
-      body : data
-    }).then((r) => {
-      ok = true;
-      return r.json();
-    }).then(rep => {
-      console.log(rep);
-    });
-    return ok;
-  }
-
   async read(idPlayer: number, idGame : number): Promise<Player | null> {
     var player : Player | null = null;
     await fetch(`${this.baseURL}game/${idGame}/player/${idPlayer}` , {
@@ -47,22 +31,31 @@ export class PlayerService {
     return player;
   }
 
+  async readGame(id: string): Promise<Game | null> {
+    var game : Game | null = null;
+    await fetch(`${this.baseURL}game/${id}` , {
+      method : 'GET'
+    }).then((r) => {
+      return r.json()
+    }).then( (r : Game) => {
+      game = r;
+    });
+    return game;
+  }
+
+
   async update(idPlayer : number, idGame : number): Promise<boolean> {
     let ok = false;
-    var game : Game | null = null;
-    var player : Player | null = null;
+    let player = await this.read(idPlayer, idGame);
+    let game = await this.readGame(idGame.toString());
 
-    await this.read(idPlayer, idGame).then(resp => {
-      player = resp;
-    });
-
-    if(game !== null){
-      var game2 : Game = game;
-      var data = new FormData();
-      data.append( "json", JSON.stringify( player ) );
-      await fetch(`${this.baseURL}game/${game2.id}/player/${idPlayer}` ,{
+    if(game !== null && player !== null){
+      await fetch(`${this.baseURL}game/${game.id}/player/${idPlayer}` ,{
         method : 'PUT',
-        body : player
+        body : JSON.stringify(player),
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }).then((r) => {
         ok = true;
         return r.json();
