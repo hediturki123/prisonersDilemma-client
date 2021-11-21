@@ -1,4 +1,3 @@
-import { Strategy } from '../types/strategy';
 import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { environment } from '../../environments/environment';
@@ -72,7 +71,6 @@ export class PlayerService {
 
   async updatePlayer(player : Player, game : Game): Promise<boolean> {
     let ok = false;
-
     if(game !== null && player !== null){
       console.log("updatePlayer : " + this.baseURL + "game/" + game.id + "/player/" + player.id);
       await fetch(`${this.baseURL}game/${game.id}/player/${player.id}` ,{

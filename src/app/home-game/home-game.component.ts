@@ -28,10 +28,6 @@ export class HomeGameComponent implements OnInit {
 
   }
 
-  readGame(idGame : string) {
-    this.gameConnectionService.read(idGame);
-  }
-
   joinGame(idGame : string) {
     this.gameConnectionService.update(idGame).then(rep => {
       if(rep){

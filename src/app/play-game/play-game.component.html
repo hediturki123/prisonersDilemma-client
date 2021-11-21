@@ -1,14 +1,16 @@
 
-<div>
-  <label> idGame : {{getGameId()}} </label>
-  <label> idPlayer : {{getPlayerId()}} </label>
-  <label> Round : {{round}} </label>
-  <button (click) = "readPlayer(getPlayerId(), getGameId())">read player1</button>
-  <button (click) = "updatePlayer(getPlayerId(), getGameId())">update player1</button>
-  <button [disabled] = "clickedPlayer1" (click) = "clickAction(getPlayerId(), 'COOPERATE')" >COOPERATE</button>
-  <button [disabled] = "clickedPlayer2" (click) = "clickAction(getPlayerId(), 'BETRAY')">BETRAY</button>
+<div class = "center">
+  <label> idGame : {{ getGameId() }} </label>
+  <label> idPlayer : {{ getPlayerId() }} </label>
+  <label> Round : {{ currentRound }} </label>
 </div>
 
-<div *ngIf = "gameIsFinished">
-  <label>Score {{score}}</label>
+<div class = "center">
+  <button [disabled] = "clicked" (click) = "clickAction('COOPERATE')" >COOPERATE</button>
+  <button [disabled] = "clicked" (click) = "clickAction('BETRAY')">BETRAY</button>
+  <button [disabled] = "clickedGiveUp" (click) = "giveUp()">GIVE UP</button>
+</div>
+
+<div *ngIf = "gameIsFinished" class = "center">
+  <label>Score : {{ score }}</label>
 </div>
