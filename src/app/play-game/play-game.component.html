@@ -6,9 +6,20 @@
 </div>
 
 <div class = "center">
-  <button [disabled] = "clicked" (click) = "clickAction('COOPERATE')" >COOPERATE</button>
-  <button [disabled] = "clicked" (click) = "clickAction('BETRAY')">BETRAY</button>
+  <button [disabled] = "clickedButtons()" (click) = "clickAction('COOPERATE')" >COOPERATE</button>
+  <button [disabled] = "clickedButtons()" (click) = "clickAction('BETRAY')">BETRAY</button>
   <button [disabled] = "clickedGiveUp" (click) = "giveUp()">GIVE UP</button>
+  <button (click)="readGame()">readGame</button>
+</div>
+
+<div class = "center">
+  <select>
+    <option>-- Choose a strategy --</option>
+    <option>DONNANT-DONNANT</option>
+    <option>COOPERER</option>
+    <option>BETRAY</option>
+    <option>RANDOM</option>
+  </select>
 </div>
 
 <div *ngIf = "gameIsFinished" class = "center">

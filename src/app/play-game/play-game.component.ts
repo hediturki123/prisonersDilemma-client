@@ -5,7 +5,6 @@ import { Component, OnInit, ChangeDetectionStrategy } from '@angular/core';
 import { Player } from '../types/player';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Game } from '../types/game';
-import { BehaviorSubject } from 'rxjs';
 
 @Component({
   selector: 'app-play-game',
@@ -20,6 +19,7 @@ export class PlayGameComponent implements OnInit {
   clickedGiveUp = false;
   gameIsFinished = false;
   score = 0;
+  playersHavePlayed = false;
 
   constructor(private gameConnectionService : GameConnectionService,
     private playerService : PlayerService, private route : ActivatedRoute, private routeur : Router) { }
@@ -46,6 +46,24 @@ export class PlayGameComponent implements OnInit {
     return await this.playerService.read(this.route.snapshot.params['playerId'], idGame as number);
   }
 
+  async readGame() {
+    let game = await this.gameConnectionService.read(this.getGameId()).then(g => {
+      this.playersHavePlayed = g?.player1?.havePlayed as boolean && g?.player2?.havePlayed as boolean;
+      console.log(this.playersHavePlayed);
+      return g;
+    });
+    console.log(game);
+    this.clicked = false;
+  }
+
+  clickedButtons() {
+    if (this.clicked === true && this.playersHavePlayed === false) {
+      return true;
+    } else {
+      return false;
+    }
+  }
+
   readPlayer(idPlayer : number, idGame : number) {
     return this.playerService.read(idPlayer, idGame);
   }
@@ -69,6 +87,8 @@ export class PlayGameComponent implements OnInit {
     });
     player.currentDecision = decision;
     player.havePlayed = true;
+    this.score = player.score;
+    game.currentRound = this.currentRound;
 
     this.playerService.updatePlayer(player, game);
     this.gameConnectionService.updateGame(game);
@@ -77,8 +97,7 @@ export class PlayGameComponent implements OnInit {
     } else {
       this.currentRound++;
     }
-
-
+    this.readGame();
   }
 
 }
