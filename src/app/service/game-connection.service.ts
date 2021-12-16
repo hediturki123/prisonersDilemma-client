@@ -89,26 +89,6 @@ export class GameConnectionService {
     return ok;
   }
 
-  async updateGame1(game : Game): Promise<boolean> {
-    let ok = false;
-    if(game !== null){
-      var game2 : Game = game;
-      await fetch(`${this.baseURL}game/${game2.id}/${game2.currentRound}` ,{
-        method : 'PUT',
-        body : JSON.stringify(game),
-        headers: {
-          'Content-Type': 'application/json'
-        }
-      }).then((r) => {
-        ok = true;
-        return r.json();
-      }).then(rep => {
-        console.log(rep);
-      });
-    }
-    return ok;
-  }
-
   async readLastGame(): Promise<Game | null>{
     var game : Game | null = null;
     await fetch(`${this.baseURL}game/lastGame` , {
