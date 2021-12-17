@@ -5,11 +5,21 @@
   <label> Round : {{ currentRound }} </label>
 </div>
 
-<div class = "center">
-  <button [disabled] = "(playerHasPlayed$ | async)" (click) = "clickAction('COOPERATE')" >COOPERATE</button>
-  <button [disabled] = "(playerHasPlayed$ | async)" (click) = "clickAction('BETRAY')">BETRAY</button>
-  <button [disabled] = "clickedGiveUp" (click) = "giveUp()">GIVE UP</button>
-  <button (click)="readGame()">readGame</button>
+<div class = "center" *ngIf = "(game$ | async) as obsGame">
+  <div *ngIf = "(playerHasPlayed$ | async) as player">
+    <button [disabled] = "player.havePlayed" (click) = "newClickAction('COOPERATE')" >COOPERATE</button>
+    <button [disabled] = "player.havePlayed" (click) = "newClickAction('BETRAY')">BETRAY</button>
+    <button [disabled] = "clickedGiveUp" (click) = "giveUp()">GIVE UP</button>
+    <button (click)="readGame()">readGame</button>
+  </div>
+</div>
+
+<div *ngIf = "(game$ | async) as obsGame">
+  <p>game : {{ obsGame | json }}</p>
+</div>
+
+<div *ngIf = "(playerHasPlayed$ | async) as player">
+  <p>player : {{ player | json }}</p>
 </div>
 
 <div class = "center">

@@ -75,10 +75,14 @@ export class GameConnectionService {
   async updateGame(game : Game): Promise<boolean> {
     let ok = false;
     if(game !== null){
-      var game2 : Game = game;
-      await fetch(`${this.baseURL}game/${game2.id}` ,{
+     // var game2 : Game = game;
+     console.log(game.id);
+      await fetch(`${this.baseURL}game/${game.id}/update` ,{
         method : 'PUT',
-        body : JSON.stringify(game2)
+        body : JSON.stringify(game),
+        headers: {
+          'Content-Type': 'application/json'
+        }
       }).then((r) => {
         ok = true;
         return r.json();

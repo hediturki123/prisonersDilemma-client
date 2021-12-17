@@ -72,7 +72,7 @@ export class PlayerService {
   async updatePlayer(player : Player, game : Game): Promise<boolean> {
     let ok = false;
     if(game !== null && player !== null){
-      console.log("updatePlayer : " + this.baseURL + "game/" + game.id + "/player/" + player.id);
+      //console.log("updatePlayer : " + this.baseURL + "game/" + game.id + "/player/" + player.id);
       await fetch(`${this.baseURL}game/${game.id}/player/${player.id}` ,{
         method : 'PUT',
         body : JSON.stringify(player),
