@@ -2,3 +2,15 @@
 .center {
   text-align: center;
   }
+
+.example-label {
+  display: center;
+  font-size: 20px;
+  margin-left: 8px;
+  min-width: 120px;
+}
+
+.example-button-row {
+  display: table-cell;
+  width: 130px;
+}

@@ -6,26 +6,30 @@
     <label *ngIf = "obsGame.currentRound <= obsGame.nbTurns"> Round : {{ obsGame.currentRound }} / {{ obsGame.nbTurns }} </label>
   </div>
   <div *ngIf = "(playerHasPlayed$ | async) as player">
-    <button [disabled] = "player.havePlayed" (click) = "newClickAction('COOPERATE')" >COOPERATE</button>
-    <button [disabled] = "player.havePlayed" (click) = "newClickAction('BETRAY')">BETRAY</button>
-    <button [disabled] = "clickedGiveUp" (click) = "giveUp()">GIVE UP</button>
-    <!--<button (click)="readGame()">readGame</button>-->
+    <button mat-raised-button [disabled] = "player.havePlayed" (click) = "newClickAction('COOPERATE')" >COOPERATE</button>
+    <button mat-raised-button [disabled] = "player.havePlayed" (click) = "newClickAction('BETRAY')">BETRAY</button>
+    <button mat-raised-button [disabled] = "clickedGiveUp" (click) = "giveUp()">GIVE UP</button>
     <div class = "center">
-      <select>
-        <option>-- Choose a strategy --</option>
-        <option>DONNANT-DONNANT</option>
-        <option>COOPERER</option>
-        <option>BETRAY</option>
-        <option>RANDOM</option>
-      </select>
+      <mat-form-field appearance="fill">
+        <mat-label>Choose a strategy</mat-label>
+        <mat-select matNativeControl>
+          <mat-option>DONNANT-DONNANT</mat-option>
+          <mat-option>COOPERER</mat-option>
+          <mat-option>BETRAY</mat-option>
+          <mat-option>RANDOM</mat-option>
+        </mat-select>
+      </mat-form-field>
+    </div>
+    <div  class = "spinner" *ngIf = "player.havePlayed">
+      <mat-spinner></mat-spinner>
     </div>
     <br/>
     <div *ngIf = "obsGame.currentRound > obsGame.nbTurns" class = "center">
       <label>Le jeu est fini !</label>
       <br/>
-      <label>Score joueur 1 : {{ obsGame.player1?.score }}</label>
+      <label>Score du joueur {{ obsGame?.player1?.id }} : {{ obsGame.player1?.score }}</label>
       <br/>
-      <label>Score joueur 2 : {{ obsGame.player2?.score }}</label>
+      <label>Score du joueur {{ obsGame?.player2?.id }} : {{ obsGame.player2?.score }}</label>
     </div>
   </div>
 </div>

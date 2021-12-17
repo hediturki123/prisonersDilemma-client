@@ -1,11 +1,15 @@
 <div class = "center">
-  <label>Choose the number of turns : </label>
-  <input type = "number" value = "1" min = "0" #nbTurns >
-    <button (click) = "createGame(nbTurns.value)">Create game</button>
-</div>
-
-<div class = "center">
-  <label>Choose the id of the game : </label>
-  <input type = "number" value = "1" min = "0" #idGame >
-  <button  (click) = "joinGame(idGame.value)">Join game</button>
+  <div>
+    <label class = "example-label">Choose the number of turns : </label>
+    <input matInput type = "number" value = "1" min = "1" #nbTurns>
+      <button mat-raised-button class = "example-button-row"
+        (click) = "createGame(nbTurns.value)">Create game</button>
+  </div>
+<br/>
+  <div class = "center">
+    <label class = "example-label">Choose the id of the game : </label>
+    <input type = "number" value = "1" min = "1" #idGame >
+    <button mat-raised-button class = "example-button-row"
+      (click) = "joinGame(idGame.value)">Join game</button>
+  </div>
 </div>
