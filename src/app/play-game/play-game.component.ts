@@ -3,7 +3,7 @@ import { SseService } from './../service/sse-service.service';
 import { Decision } from './../types/decision';
 import { PlayerService } from './../service/player.service';
 import { GameConnectionService } from './../service/game-connection.service';
-import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef } from '@angular/core';
+import { Component, OnInit, ChangeDetectionStrategy, ChangeDetectorRef, OnDestroy } from '@angular/core';
 import { Player } from '../types/player';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Game } from '../types/game';
@@ -14,17 +14,16 @@ import { map } from 'rxjs/operators';
   selector: 'app-play-game',
   templateUrl: './play-game.component.html',
   styleUrls: ['./play-game.component.scss'],
-  changeDetection: ChangeDetectionStrategy.Default
+  changeDetection: ChangeDetectionStrategy.OnPush
 })
-export class PlayGameComponent implements OnInit {
+export class PlayGameComponent implements OnInit, OnDestroy {
 
   currentRound = 1;
-  clicked = false;
   clickedGiveUp = false;
   gameIsFinished = false;
   score = 0;
   playersHavePlayed = false;
-  grayedButton = false;
+  nbTurns = 0;
 
   game$ : BehaviorSubject<Game | null> = new BehaviorSubject<Game | null> ({
     id:0,
@@ -63,12 +62,15 @@ export class PlayGameComponent implements OnInit {
         if (parseInt(this.getPlayerId()) === game?.player1?.id) {
           return game?.player1 as Player;
         } else {
-          console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
           return game?.player2 as Player;
         }
       })
       );
       this.cdr.detectChanges();
+  }
+
+  ngOnDestroy() {
+    this.game$.complete();
   }
 
   getGameId() {
@@ -94,6 +96,7 @@ export class PlayGameComponent implements OnInit {
     from(this.gameConnectionService.read(this.getGameId()).then(rep => {
       console.log(rep);
       this.currentRound = rep?.currentRound as number;
+      this.nbTurns = rep?.nbTurns as number;
       return rep
     })).subscribe(g => {
       this.playersHavePlayed = g?.player1?.havePlayed as boolean && g?.player2?.havePlayed as boolean;
@@ -125,38 +128,36 @@ export class PlayGameComponent implements OnInit {
 
   }
 
-  async clickAction(decision : Decision) {
-    let game = await this.readGameFromUrl().then(g => {
-      return g as Game;
-    });
-    let player = await this.readPlayer(this.getPlayerId(), game.id).then(p => {
-      return p as Player;
-    });
-    player.currentDecision = decision;
-    player.havePlayed = true;
-    if(player.id == game?.player1?.id) {
-      game.player1 = player;
-      game.player1.havePlayed = true;
-    } else if (player.id == game?.player2?.id) {
-      game.player2 = player;
-      game.player2.havePlayed = true;
-    }
+  // async clickAction(decision : Decision) {
+  //   let game = await this.readGameFromUrl().then(g => {
+  //     return g as Game;
+  //   });
+  //   let player = await this.readPlayer(this.getPlayerId(), game.id).then(p => {
+  //     return p as Player;
+  //   });
+  //   player.currentDecision = decision;
+  //   player.havePlayed = true;
+  //   if(player.id == game?.player1?.id) {
+  //     game.player1 = player;
+  //     game.player1.havePlayed = true;
+  //   } else if (player.id == game?.player2?.id) {
+  //     game.player2 = player;
+  //     game.player2.havePlayed = true;
+  //   }
 
-    this.score = player.score;
-    game.currentRound = this.currentRound;
-    console.log("player : " + player.havePlayed + ", " + game.player1?.havePlayed);
+  //   this.score = player.score;
+  //   game.currentRound = this.currentRound;
+  //   console.log("player : " + player.havePlayed + ", " + game.player1?.havePlayed);
 
-    this.playerService.updatePlayer(player, game);
-    this.gameConnectionService.updateGame(game);
-    // this.sseService.getServerSentEvent("http://localhost:5000/home/game/waitPlayer/idGame=" + this.////getGameId());
-    if (this.currentRound === game.nbTurns) {
-      this.gameIsFinished = true;
-    }
-    this.currentRound = game.currentRound;
-    console.log("have played : " + player.havePlayed + ", " + game.player1?.havePlayed  );
-    this.readGame();
-    //this.clickedButtons(game);
-  }
+  //   this.playerService.updatePlayer(player, game);
+  //   this.gameConnectionService.updateGame(game);
+  //   if (this.currentRound === game.nbTurns) {
+  //     this.gameIsFinished = true;
+  //   }
+  //   this.currentRound = game.currentRound;
+  //   console.log("have played : " + player.havePlayed + ", " + game.player1?.havePlayed  );
+  //   this.readGame();
+  // }
 
 
 
@@ -176,8 +177,6 @@ export class PlayGameComponent implements OnInit {
     this.playerService.updatePlayer(player, game);
     console.log("updatePlayer");
     console.log(player);
-    //this.readGame();
-
   }
 
 }

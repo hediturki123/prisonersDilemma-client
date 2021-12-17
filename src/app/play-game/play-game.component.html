@@ -1,37 +1,42 @@
 
-<div class = "center">
-  <label> idGame : {{ getGameId() }} </label>
-  <label> idPlayer : {{ getPlayerId() }} </label>
-  <label> Round : {{ currentRound }} </label>
-</div>
-
 <div class = "center" *ngIf = "(game$ | async) as obsGame">
+  <div>
+    <label> idGame : {{ obsGame.id }} </label>
+    <label> idPlayer : {{ getPlayerId() }} </label>
+    <label *ngIf = "obsGame.currentRound <= obsGame.nbTurns"> Round : {{ obsGame.currentRound }} / {{ obsGame.nbTurns }} </label>
+  </div>
   <div *ngIf = "(playerHasPlayed$ | async) as player">
     <button [disabled] = "player.havePlayed" (click) = "newClickAction('COOPERATE')" >COOPERATE</button>
     <button [disabled] = "player.havePlayed" (click) = "newClickAction('BETRAY')">BETRAY</button>
     <button [disabled] = "clickedGiveUp" (click) = "giveUp()">GIVE UP</button>
-    <button (click)="readGame()">readGame</button>
+    <!--<button (click)="readGame()">readGame</button>-->
+    <div class = "center">
+      <select>
+        <option>-- Choose a strategy --</option>
+        <option>DONNANT-DONNANT</option>
+        <option>COOPERER</option>
+        <option>BETRAY</option>
+        <option>RANDOM</option>
+      </select>
+    </div>
+    <br/>
+    <div *ngIf = "obsGame.currentRound > obsGame.nbTurns" class = "center">
+      <label>Le jeu est fini !</label>
+      <br/>
+      <label>Score joueur 1 : {{ obsGame.player1?.score }}</label>
+      <br/>
+      <label>Score joueur 2 : {{ obsGame.player2?.score }}</label>
+    </div>
   </div>
 </div>
 
-<div *ngIf = "(game$ | async) as obsGame">
+<!--<div *ngIf = "(game$ | async) as obsGame">
   <p>game : {{ obsGame | json }}</p>
 </div>
 
 <div *ngIf = "(playerHasPlayed$ | async) as player">
   <p>player : {{ player | json }}</p>
 </div>
+-->
 
-<div class = "center">
-  <select>
-    <option>-- Choose a strategy (Pas encore implémenté) --</option>
-    <option>DONNANT-DONNANT</option>
-    <option>COOPERER</option>
-    <option>BETRAY</option>
-    <option>RANDOM</option>
-  </select>
-</div>
 
-<div *ngIf = "gameIsFinished" class = "center">
-  <label>Le jeu est fini ! Score : {{ score }}</label>
-</div>

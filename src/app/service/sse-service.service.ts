@@ -1,5 +1,4 @@
 import { Injectable, NgZone } from "@angular/core";
-import { Game } from "../types/game";
 import { Observable } from "rxjs";
 
 @Injectable({
@@ -13,14 +12,12 @@ export class SseService {
       const eventSource = this.getEventSource(url);
       eventSource.onmessage = event => {
         const msg = JSON.parse(event.data);
-        console.log("AAAAAAAAAAAAAAAAAAAA");
         console.log(msg);
           observer.next(msg);
       };
 
       eventSource.onerror = error => {
         this._zone.run(() => {
-          console.log("BBBBBBBB");
           observer.error(error);
           eventSource.close();
         });
