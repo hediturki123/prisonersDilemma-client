@@ -63,10 +63,12 @@ export class PlayGameComponent implements OnInit {
         if (parseInt(this.getPlayerId()) === game?.player1?.id) {
           return game?.player1 as Player;
         } else {
+          console.log("zzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzzz");
           return game?.player2 as Player;
         }
       })
-    );
+      );
+      this.cdr.detectChanges();
   }
 
   getGameId() {
@@ -124,7 +126,6 @@ export class PlayGameComponent implements OnInit {
   }
 
   async clickAction(decision : Decision) {
-    //this.clicked = true;
     let game = await this.readGameFromUrl().then(g => {
       return g as Game;
     });
@@ -147,7 +148,7 @@ export class PlayGameComponent implements OnInit {
 
     this.playerService.updatePlayer(player, game);
     this.gameConnectionService.updateGame(game);
-    this.sseService.getServerSentEvent("http://localhost:5000/home/game/waitPlayer/idGame=" + this.getGameId());
+    // this.sseService.getServerSentEvent("http://localhost:5000/home/game/waitPlayer/idGame=" + this.////getGameId());
     if (this.currentRound === game.nbTurns) {
       this.gameIsFinished = true;
     }
@@ -175,7 +176,7 @@ export class PlayGameComponent implements OnInit {
     this.playerService.updatePlayer(player, game);
     console.log("updatePlayer");
     console.log(player);
-    this.readGame();
+    //this.readGame();
 
   }
 
