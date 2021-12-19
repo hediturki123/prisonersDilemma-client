@@ -1,3 +1,4 @@
+import { Strategy } from './../types/strategy';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { SseService } from './../service/sse-service.service';
 import { Decision } from './../types/decision';
@@ -9,6 +10,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Game } from '../types/game';
 import { from } from 'rxjs';
 import { map } from 'rxjs/operators';
+import { FormControl } from '@angular/forms';
 
 @Component({
   selector: 'app-play-game',
@@ -20,10 +22,10 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
   currentRound = 1;
   clickedGiveUp = false;
-  gameIsFinished = false;
-  score = 0;
   playersHavePlayed = false;
   nbTurns = 0;
+  strategyList: Strategy[] = ["", "GIVE_GIVE", "GIVE_GIVERANDOM", "RANDOM"];
+  selectedStrategy : Strategy = "";
 
   game$ : BehaviorSubject<Game | null> = new BehaviorSubject<Game | null> ({
     id:0,
@@ -128,39 +130,6 @@ export class PlayGameComponent implements OnInit, OnDestroy {
 
   }
 
-  // async clickAction(decision : Decision) {
-  //   let game = await this.readGameFromUrl().then(g => {
-  //     return g as Game;
-  //   });
-  //   let player = await this.readPlayer(this.getPlayerId(), game.id).then(p => {
-  //     return p as Player;
-  //   });
-  //   player.currentDecision = decision;
-  //   player.havePlayed = true;
-  //   if(player.id == game?.player1?.id) {
-  //     game.player1 = player;
-  //     game.player1.havePlayed = true;
-  //   } else if (player.id == game?.player2?.id) {
-  //     game.player2 = player;
-  //     game.player2.havePlayed = true;
-  //   }
-
-  //   this.score = player.score;
-  //   game.currentRound = this.currentRound;
-  //   console.log("player : " + player.havePlayed + ", " + game.player1?.havePlayed);
-
-  //   this.playerService.updatePlayer(player, game);
-  //   this.gameConnectionService.updateGame(game);
-  //   if (this.currentRound === game.nbTurns) {
-  //     this.gameIsFinished = true;
-  //   }
-  //   this.currentRound = game.currentRound;
-  //   console.log("have played : " + player.havePlayed + ", " + game.player1?.havePlayed  );
-  //   this.readGame();
-  // }
-
-
-
   async newClickAction(decision : Decision) {
     let game = await this.readGameFromUrl().then(g => {
       return g as Game;
@@ -168,15 +137,38 @@ export class PlayGameComponent implements OnInit, OnDestroy {
     let player = await this.readPlayer(this.getPlayerId(), game.id).then(p => {
       return p as Player;
     });
-    console.log("game");
-    console.log(game);
-    console.log(player);
 
     player.currentDecision = decision;
     player.havePlayed = true;
     this.playerService.updatePlayer(player, game);
-    console.log("updatePlayer");
+  }
+
+  selectChangeHandler(event : any) {
+    this.selectedStrategy = event.target.value;
+  }
+
+  async playStrategy() {
+    let game = await this.readGameFromUrl().then(g => {
+      return g as Game;
+    });
+    let player = await this.readPlayer(this.getPlayerId(), game.id).then(p => {
+      return p as Player;
+    });
+
+    if (this.selectedStrategy === "GIVE_GIVE") {
+      player.strategy = 1;
+    } else if (this.selectedStrategy === "GIVE_GIVERANDOM") {
+      player.strategy = 2;
+    } else if (this.selectedStrategy === "RANDOM") {
+      player.strategy = 3;
+    }
+    player.currentDecision = 'GIVEUP';
+    console.log("player strategy : " + player.strategy);
+    player.havePlayed = true;
+    this.playerService.updatePlayer(player, game);
+    console.log("player : ")
     console.log(player);
+
   }
 
 }

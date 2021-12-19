@@ -52,5 +52,5 @@
     "typescript": "~4.0.2"
   },
   "heroku-postbuild": "ng build — prod",
-  "start" : "node server.js"
+  "start": "node server.js"
 }

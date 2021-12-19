@@ -1,3 +1,4 @@
+import { Strategy } from './strategy';
 import { Decision } from "./decision";
 
 export type Player = {
@@ -5,6 +6,7 @@ export type Player = {
   score : number;
   currentDecision : Decision | null;
   havePlayed : boolean;
+  strategy : number;
 }
 
 

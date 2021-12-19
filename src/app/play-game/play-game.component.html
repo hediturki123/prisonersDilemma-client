@@ -9,16 +9,16 @@
     <button mat-raised-button [disabled] = "player.havePlayed" (click) = "newClickAction('COOPERATE')" >COOPERATE</button>
     <button mat-raised-button [disabled] = "player.havePlayed" (click) = "newClickAction('BETRAY')">BETRAY</button>
     <button mat-raised-button [disabled] = "clickedGiveUp" (click) = "giveUp()">GIVE UP</button>
-    <div class = "center">
-      <mat-form-field appearance="fill">
+
+    <div>
+      <mat-form-field>
         <mat-label>Choose a strategy</mat-label>
-        <mat-select matNativeControl>
-          <mat-option>DONNANT-DONNANT</mat-option>
-          <mat-option>COOPERER</mat-option>
-          <mat-option>BETRAY</mat-option>
-          <mat-option>RANDOM</mat-option>
+        <mat-select  matNativeControl [(ngModel)]="selectedStrategy" (change) = "selectChangeHandler($event)" >
+          <mat-option *ngFor = "let s of strategyList" [value] = "s">{{ s }}</mat-option>
         </mat-select>
       </mat-form-field>
+          {{ selectedStrategy }}
+          <button mat-raised-button [disabled] = "player.havePlayed" (click) = "playStrategy()" >Play selected strategy</button>
     </div>
     <div  class = "spinner" *ngIf = "player.havePlayed">
       <mat-spinner></mat-spinner>
