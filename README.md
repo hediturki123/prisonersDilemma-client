@@ -1,13 +1,13 @@
 # Dilemme du prisonnier - client
 
 ## Lancer le serveur
-- mvn clean install
-- heroku local
+- `mvn clean install`
+- `heroku local`
 
 -> Si ça ne marche pas, faire Maven install depuis votre IDE et lancer le main de la classe RestServer.java
 
 ## Lancer le client
-- npm start
+- `npm start`
 
 # 2ème itération
 ## Serveur
